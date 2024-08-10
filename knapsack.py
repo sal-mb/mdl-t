@@ -19,20 +19,20 @@ def parse_knapsack_instance(filename):
                 profit, weight = map(int, line.strip().split())
                 profits.append(profit)
                 weights.append(weight)
-    
+
     if len(profits) != n or len(weights) != n:
         raise ValueError("The number of items does not match the number specified in the file")
-    
+
     return n, wmax, profits, weights
 
 def main():
     # Set up command-line argument parsing
     parser = argparse.ArgumentParser(description="Parse a 0/1 Knapsack problem instance from a file.")
     parser.add_argument('filename', type=str, help="Name of the knapsack problem instance file")
-    
+
     args = parser.parse_args()
     filename = args.filename
-    
+
     # Parse the knapsack instance
     try:
         n, wmax, profits, weights = parse_knapsack_instance(filename)
