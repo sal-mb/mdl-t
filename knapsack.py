@@ -34,7 +34,7 @@ def main():
 
     m += xsum(weights[i] * x[i] for i in I) <= wmax
 
-    m.optimize()
+    m.optimize(max_nodes_same_incumbent=50000,max_seconds_same_incumbent=60)
 
     selected = [i for i in I if x[i].x >= 0.99]
     print("selected items: {}".format(selected))
