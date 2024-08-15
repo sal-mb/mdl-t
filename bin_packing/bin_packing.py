@@ -1,7 +1,7 @@
 from mip import Model, xsum, maximize, minimize, BINARY, CBC
 
 # Importing instace reader for the problem
-from instance_readers.bin_packing import parse_b_p_instance
+from reader import parse_b_p_instance
 
 import argparse
 import os
@@ -28,28 +28,32 @@ def main():
 
     itens = range(n_itens)
 
-    #sep_itens = [23, 39] # constraint - 2 itens cant be in the same bin
-
     m = Model(solver_name=CBC)
 
+    # --------------------- decision variables ----------------------
     x = [[m.add_var(var_type=BINARY) for i in bins] for j in itens]
 
     y = [m.add_var(var_type=BINARY) for i in bins]
 
+    
+    # ------------------ objective function ----------------
     m.objective = minimize(xsum(y[i] for i in bins))
+    
 
+    # ---------------------- constraints -------------------------
     for j in itens:
         m += xsum(x[i][j] for i in bins) == 1
 
     for i in bins:
         m += xsum(weights[j] * x[i][j] for j in itens) <= capacity * y[i]
 
-    #for i in bins: # constraint - 2 itens cant be in the same bin
-    #   m += x[i][sep_itens[0]] + x[i][sep_itens[1]] <= 1
 
+    # ---------------------- solving ----------------------------
     m.optimize(max_nodes_same_incumbent=50000,max_seconds_same_incumbent=60)
 
-    print("Bins used: ",m.objective_value)
+    
+    # -------------------- printing results ----------------------
+    print("Bins used: ",m.objective_value, "\n")
 
     for i in bins:
         if y[i].x >= 0.99:

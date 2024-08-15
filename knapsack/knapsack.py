@@ -1,6 +1,7 @@
 from mip import Model, xsum, maximize, BINARY, CBC
 
-from instance_readers.knapsack import parse_knapsack_instance
+# Importing instace reader for the problem
+from reader import parse_knapsack_instance
 
 import argparse
 import os
@@ -27,19 +28,30 @@ def main():
     I = range(n)
 
     m = Model(solver_name=CBC)
+    
 
+    # --------------------- decision variables ----------------------
     x = [m.add_var(var_type=BINARY) for i in I]
 
+
+    # ------------------ objective function ----------------
     m.objective = maximize(xsum(profits[i] * x[i] for i in I))
 
+ 
+    # ---------------------- constraints -------------------------
     m += xsum(weights[i] * x[i] for i in I) <= wmax
+    
 
+    # ---------------------- solving ----------------------------
     m.optimize(max_nodes_same_incumbent=50000,max_seconds_same_incumbent=60)
+    
 
+    # -------------------- printing results ----------------------
     selected = [i for i in I if x[i].x >= 0.99]
+
     print("selected items: {}".format(selected))
 
-    print("objectivevalue: ", m.objective_value)
+    print("objective value: ", m.objective_value)
 
 if __name__ == "__main__":
     main()
