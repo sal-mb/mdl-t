@@ -16,17 +16,17 @@ def parse_knapsack_instance(filename):
         # Read the variables depending on the challenge from the book
         if challenge == 1:
             second_line = file.readline().strip()
-            c_1, c_2 = map(int, second_line.split())  
+            k, l = map(int, second_line.split())  
 
         # Read subsequent lines for items' profit and weight
         for line in file:
             if line.strip():  # Ensure line is not empty
-                profit, weight = map(int, line.strip().split())
+                profit, weight = map(float, line.strip().split())
                 profits.append(profit)
                 weights.append(weight)
 
     if len(profits) != n or len(weights) != n:
         raise ValueError("The number of items does not match the number specified in the file")
 
-    return n, wmax, profits, weights, c_1, c_2
+    return n, wmax, profits, weights, k, l
 

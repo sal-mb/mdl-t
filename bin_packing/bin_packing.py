@@ -29,6 +29,7 @@ def main():
     itens = range(n_itens)
 
     m = Model(solver_name=CBC)
+    m.verbose = 0
 
     # --------------------- decision variables ----------------------
     x = [[m.add_var(var_type=BINARY) for i in bins] for j in itens]

@@ -14,13 +14,15 @@ def main():
     args = parser.parse_args()
     filename = args.filename
 
-    # Parse the knapsack instance (c_1 and c_2 are the challenge variables)
+    # Parse the knapsack instance (k and l are the exercise variables)
     try:
-        n, wmax, profits, weights, c_1, c_2 = parse_knapsack_instance(filename)
+        n, wmax, profits, weights, k, l = parse_knapsack_instance(filename)
         print(f"Number of items: {n}")
         print(f"Knapsack capacity: {wmax}")
         print(f"Profits: {profits}")
         print(f"Weights: {weights}")
+        if k != 0 and l != 0:
+            print(f"Exercise variables: {k}, {l}")
     except ValueError as e:
         print(f"Error: {e}")
     
@@ -47,7 +49,7 @@ def main():
 
     # ------------------- add your constraints below --------------------
     
-    m += x[c_2] <= x[c_1]
+    m += x[k] <= x[l]
 
 
     # --------------------------- solving -------------------------------
