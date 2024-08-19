@@ -1,41 +1,26 @@
 from mip import Model, xsum, maximize, BINARY, CBC
 
-# Importing instace reader for the problem
-from reader import parse_knapsack_instance
+def knapsack_solver(data, j, k, l, solution):
 
-import argparse
-import os
+    n = data['n']
+    wmax = data['capacity']
+    profits = data['profits']
+    weights = data['weights']
 
-def main():
-    # Set up command-line argument parsing
-    parser = argparse.ArgumentParser(description="Parse a 0/1 Knapsack problem instance from a file.")
-    parser.add_argument('filename', type=str, help="Name of the knapsack problem instance file")
-
-    args = parser.parse_args()
-    filename = args.filename
-
-    # Parse the knapsack instance (k and l are the exercise variables)
-    try:
-        n, wmax, profits, weights, k, l = parse_knapsack_instance(filename)
-        print(f"Number of items: {n}")
-        print(f"Knapsack capacity: {wmax}")
-        print(f"Profits: {profits}")
-        print(f"Weights: {weights}")
-        if k != 0 and l != 0:
-            print(f"Exercise variables: {k}, {l}")
-    except ValueError as e:
-        print(f"Error: {e}")
-    
-    # --------------------------------- model ---------------------------
     I = range(n)
 
+
+    # ------------------------------ model ------------------------------
     m = Model(solver_name=CBC)
     m.verbose = 0
+
 
     # ----------------------- decision variables ------------------------
     x = [m.add_var(var_type=BINARY) for i in I]
     
+
     # --------------------- add your variables below --------------------
+
 
 
 
@@ -48,20 +33,24 @@ def main():
     
 
     # ------------------- add your constraints below --------------------
-    
-    m += x[k] <= x[l]
 
+
+    
 
     # --------------------------- solving -------------------------------
-    m.optimize(max_nodes_same_incumbent=50000,max_seconds_same_incumbent=60)
-    
+    set_solution(solution, m, x)
+    status = m.optimize(max_nodes_same_incumbent=50000,max_seconds_same_incumbent=60)
 
-    # ------------------------ printing results -------------------------
-    selected = [i for i in I if x[i].x >= 0.99]
 
-    print("selected items: {}".format(selected))
+    return status.value
 
-    print("objective value: ", m.objective_value)
 
-if __name__ == "__main__":
-    main()
+
+def set_solution(solution, m, x):
+
+    for i in range(len(x)):
+
+        if i in solution:
+            m += x[i] == 1
+        else:
+            m += x[i] == 0
