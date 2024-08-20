@@ -1,8 +1,19 @@
-from knapsack import knapsack_solver
+import itertools
 
 from pathlib import Path
 
-import sys
+import sys 
+
+# import exercise files
+sys.path.insert(0, './exercise_1')
+sys.path.insert(0, './exercise_2')
+sys.path.insert(0, './exercise_3')
+sys.path.insert(0, './exercise_4')
+
+from exercise_1 import kp_exercise_1
+from exercise_2 import kp_exercise_2
+from exercise_3 import kp_exercise_3
+from exercise_4 import kp_exercise_4
 
 def get_args():
 
@@ -26,8 +37,8 @@ def parse_check_file(file_path):
 
 def parse_exercise_files(exercise):
     
-    file_path = "./exercises/" + str(exercise) + "/instance"
-    file_path_check = "./exercises/" + str(exercise) + "/check"
+    file_path = "./exercise_" + str(exercise) + "/instance"
+    file_path_check = "./exercise_" + str(exercise) + "/check"
 
     n = 0
     capacity = 0
@@ -89,9 +100,27 @@ def print_formatted_arrays(array, status):
     else:
         print(line,"❌")
 
+def generate_partitions(n, m):
+    numbers = list(range(0, n))
+    
+    def partitions(numbers, m):
+        if m == 1:
+            yield [numbers]
+        else:
+            for i in range(1, len(numbers)):
+                for part in itertools.combinations(numbers, i):
+                    remaining = [x for x in numbers if x not in part]
+                    for subpartition in partitions(remaining, m-1):
+                        yield [list(part)] + subpartition
+    
+    return list(partitions(numbers, m))
 
 def exercise_solution(exercise, data, test):
-    if exercise <= 2:
-        return knapsack_solver(data, 0, 1, -1, test)
+    if exercise ==1:
+        return kp_exercise_1(data, 0, 1, test)
+    elif exercise == 2:
+        return kp_exercise_2(data, 0, 1, test)
+    elif exercise == 3:
+        return kp_exercise_3(data, 0, 1, 2, test)
     else:
-        return knapsack_solver(data, 0, 1, 2, test)
+        return kp_exercise_4(data, 3, test)

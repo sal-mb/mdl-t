@@ -1,13 +1,16 @@
 from mip import Model, xsum, maximize, BINARY, CBC
 
-def knapsack_solver(data, j, k, l, solution):
+def kp_exercise_4(data, sacks, solution):
 
     n = data['n']
     wmax = data['capacity']
-    profits = data['profits']
-    weights = data['weights']
+    p = data['profits']
+    w = data['weights']
 
     I = range(n)
+
+    # set of knapsacks of exercise 4
+    K = range(sacks)
 
 
     # ------------------------------ model ------------------------------
@@ -16,41 +19,34 @@ def knapsack_solver(data, j, k, l, solution):
 
 
     # ----------------------- decision variables ------------------------
-    x = [m.add_var(var_type=BINARY) for i in I]
-    
-
-    # --------------------- add your variables below --------------------
+    x = [[m.add_var(var_type=BINARY) for k in K] for i in I]
 
 
 
 
     # ------------------------ objective function -----------------------
-    m.objective = maximize(xsum(profits[i] * x[i] for i in I))
+    
 
- 
+
     # -------------------------- constraints ----------------------------
-    m += xsum(weights[i] * x[i] for i in I) <= wmax
-    
-
-    # ------------------- add your constraints below --------------------
 
 
-    
+
 
     # --------------------------- solving -------------------------------
-    set_solution(solution, m, x)
+    set_solution(solution, m, x, K)
     status = m.optimize(max_nodes_same_incumbent=50000,max_seconds_same_incumbent=60)
-
 
     return status.value
 
 
 
-def set_solution(solution, m, x):
+def set_solution(solution, m, x, K):
 
-    for i in range(len(x)):
+    for k in K:
+        for i in range(len(x)):
+            if i in solution[k]:
+                m += x[i][k] == 1
+            else:
+                m += x[i][k] == 0
 
-        if i in solution:
-            m += x[i] == 1
-        else:
-            m += x[i] == 0

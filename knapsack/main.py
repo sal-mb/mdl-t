@@ -1,13 +1,13 @@
-from reader import exercise_solution, print_formatted_arrays, parse_exercise_files, get_args
+from reader import exercise_solution, print_formatted_arrays, parse_exercise_files, get_args, generate_partitions
 
 import time
 
 def write_text_to_file(file_path, content):
     with open(file_path, 'a') as file:
         file.write(content)
-        
-def main():
 
+def main():
+    
     exercise = get_args()
     
     # reading instances 
@@ -16,19 +16,25 @@ def main():
     # counter variable
     got_right = 0
 
+    # partitions for exercise 4
+    if exercise == 4:
+        tests = generate_partitions(data['n'],3)
+        n_tests = len(tests)
+
+
     # reading check file
     for i in range(n_tests):
         time.sleep(2.0/127)
-
+        
         status = exercise_solution(exercise, data, tests[i])
-
+        
+        #write_text_to_file("4/check", str(status) + ' ')
         if status == checks[i]:
             got_right += 1
             print_formatted_arrays(tests[i], 1)
 
         else:
             print_formatted_arrays(tests[i], 0)
-                                   
 
     
     if got_right == n_tests:
@@ -39,3 +45,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
