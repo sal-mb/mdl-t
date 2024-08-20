@@ -1,6 +1,6 @@
 # Kit Prequel
 
-To solve the exercises, you should modify the KP formulation present in the "knapsack.py" inside the "knapsack/" folder.
+To solve the exercises, you should modify the KP formulation present in the "exercise_\*.py" inside the each "exercise_\*/" folder.
 When you are done altering the model, you can check the correctness of your answer by running the following command:
 
 `python main.py [exercise number]`
